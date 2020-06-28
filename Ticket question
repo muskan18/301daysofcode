@@ -1,0 +1,52 @@
+class Solution {
+public:
+    
+    vector<string> itinerary;
+    
+    static bool myComp(vector<string> v1, vector<string> v2){
+        return (v1[0]==v2[0])?v1[1]<v2[1]:v1[0]<v2[0];
+    }
+
+    
+    void printGraph(unordered_map<string, multiset<string>> mp){
+         for(auto p: mp){
+            cout<<p.first<<" : ";
+            for(auto x:p.second) cout<<x<<", ";
+            cout<<"\n";
+        }
+    }
+    
+    void dfs(string src, unordered_map<string, multiset<string>> &mp){   
+        
+        while(mp[src].size()){
+            string s = *(mp[src].begin());
+            mp[src].erase(mp[src].begin());
+            
+            dfs(s, mp);
+            
+            
+        }
+        itinerary.push_back(src);
+        
+    }
+    
+    vector<string> findItinerary(vector<vector<string>>& tickets) {
+        
+        int n = tickets.size();
+        
+        sort(tickets.begin(), tickets.end(), myComp);   //so that dfs gives smallest lexicographic answer
+        
+        unordered_map<string, multiset<string>> mp;
+        for(auto v: tickets){
+            mp[v[0]].insert(v[1]);
+        }
+
+        
+        printGraph(mp);
+        
+        itinerary.clear();
+        dfs("JFK", mp);
+        reverse(itinerary.begin(), itinerary.end());
+        return itinerary;
+    }
+};
